@@ -1,9 +1,23 @@
-const dayjs = require('dayjs')
+// オプションの取得
+const defaultDate = new Date()
 
+const argv = require('minimist')(process.argv.slice(2), {
+  alias: {
+    y: 'year',
+    m: 'month'
+  },
+  default: {
+    y: defaultDate.getFullYear(),
+    m: defaultDate.getMonth() + 1
+  }
+})
+
+// 日付の取得
+const dayjs = require('dayjs')
 require('dayjs/locale/ja')
 dayjs.locale('ja')
 
-const now = dayjs()
+const now = dayjs(`${argv.y}-${argv.m}`)
 
 // 日付の取得
 const startDate = now.startOf('month')
