@@ -1,5 +1,5 @@
 // オプションの取得
-const defaultDate = new Date()
+const now = new Date()
 
 const argv = require('minimist')(process.argv.slice(2), {
   alias: {
@@ -7,8 +7,8 @@ const argv = require('minimist')(process.argv.slice(2), {
     m: 'month'
   },
   default: {
-    y: defaultDate.getFullYear(),
-    m: defaultDate.getMonth() + 1
+    y: now.getFullYear(),
+    m: now.getMonth() + 1
   }
 })
 
@@ -17,11 +17,11 @@ const dayjs = require('dayjs')
 require('dayjs/locale/ja')
 dayjs.locale('ja')
 
-const now = dayjs(`${argv.y}-${argv.m}`)
+const targerMonth = dayjs(`${argv.y}-${argv.m}`)
 
 // 日付の取得
-const startDate = now.startOf('month')
-const endDate = now.endOf('month')
+const startDate = targerMonth.startOf('month')
+const endDate = targerMonth.endOf('month')
 const dates = []
 
 for (let date = startDate; date <= endDate; date = date.add(1, 'd')) {
@@ -30,8 +30,8 @@ for (let date = startDate; date <= endDate; date = date.add(1, 'd')) {
 
 // ヘッダーを表示
 let headerPadding = 0
-now.format('MMMM YYYY').length === 8 ? headerPadding = 14 : headerPadding = 13
-console.log(now.format('MMMM YYYY').padStart(headerPadding, ' ').padEnd(20, ' '))
+targerMonth.format('MMMM YYYY').length === 8 ? headerPadding = 14 : headerPadding = 13
+console.log(targerMonth.format('MMMM YYYY').padStart(headerPadding, ' ').padEnd(20, ' '))
 console.log(('日 月 火 水 木 金 土'))
 
 // 1日までを空白で埋める
