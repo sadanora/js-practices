@@ -21,7 +21,7 @@ console.log(now.format('MMMM YYYY').padStart(headerPadding, ' ').padEnd(20, ' ')
 console.log(('日 月 火 水 木 金 土'))
 
 // 1日までを空白で埋める
-const wday = now.format('d')
+const wday = startDate.format('d')
 process.stdout.write(`${' '.repeat(wday * 3)}`)
 
 // 日付の表示
