@@ -28,11 +28,10 @@ for (let date = startDate; date <= endDate; date = date.add(1, 'd')) {
 }
 
 // ヘッダーを表示
-const PaddingRight = 20
-let PaddingLeft = 0
-targetMonth.format('MMMM YYYY').length === 8 ? PaddingLeft = 14 : PaddingLeft = 13
+const paddingLeft = targetMonth.format('MMMM YYYY').length === 8 ? 14 : 13
+const paddingRight = 20
 
-console.log(targetMonth.format('MMMM YYYY').padStart(PaddingLeft, ' ').padEnd(PaddingRight, ' '))
+console.log(targetMonth.format('MMMM YYYY').padStart(paddingLeft, ' ').padEnd(paddingRight, ' '))
 console.log(('日 月 火 水 木 金 土'))
 
 // 1日までを空白で埋める
