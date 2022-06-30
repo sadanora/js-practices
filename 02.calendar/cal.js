@@ -1,5 +1,10 @@
-// オプションの取得
-const now = new Date()
+// dayjsモジュールのrequireとロケール設定
+const dayjs = require('dayjs')
+require('dayjs/locale/ja')
+dayjs.locale('ja')
+
+// コマンドライン引数の取得
+const now = dayjs()
 
 const argv = require('minimist')(process.argv.slice(2), {
   alias: {
@@ -7,16 +12,12 @@ const argv = require('minimist')(process.argv.slice(2), {
     m: 'month'
   },
   default: {
-    y: now.getFullYear(),
-    m: now.getMonth() + 1
+    y: now.format('YYYY'),
+    m: now.format('M')
   }
 })
 
-// 日付の取得
-const dayjs = require('dayjs')
-require('dayjs/locale/ja')
-dayjs.locale('ja')
-
+// 対象月のインスタンス作成
 const targerMonth = dayjs(`${argv.y}-${argv.m}`)
 
 // 日付の取得
