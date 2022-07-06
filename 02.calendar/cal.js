@@ -39,7 +39,7 @@ console.log(('日 月 火 水 木 金 土'))
 
 // 1日までを空白で埋める
 const blankUnit = 3
-const wday = startDate.format('d')
+const wday = startDate.day()
 
 process.stdout.write(' '.repeat(wday * blankUnit))
 
@@ -48,7 +48,7 @@ const saturday = 6
 
 for (const date of dates) {
   process.stdout.write(`${date.format('D').padStart(2, ' ')} `)
-  if (parseInt(date.format('d')) === saturday) {
+  if (date.day() === saturday) {
     process.stdout.write('\n')
   }
 }
