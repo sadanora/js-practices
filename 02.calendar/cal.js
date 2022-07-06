@@ -25,10 +25,6 @@ const targetMonth = dayjs(`${argv.y}-${argv.m}`)
 // 日付の取得
 const startDate = targetMonth.startOf('month')
 const endDate = targetMonth.endOf('month')
-const dates = []
-for (let date = startDate; date <= endDate; date = date.add(1, 'd')) {
-  dates.push(date)
-}
 
 // ヘッダーを表示
 const paddingLeft = targetMonth.format('MMMM YYYY').length === 8 ? 14 : 13
@@ -46,7 +42,7 @@ process.stdout.write(' '.repeat(wday * blankUnit))
 // 日付の表示
 const saturday = 6
 
-for (const date of dates) {
+for (let date = startDate; date <= endDate; date = date.add(1, 'd')) {
   process.stdout.write(`${date.format('D').padStart(2, ' ')} `)
   if (date.day() === saturday) {
     process.stdout.write('\n')
