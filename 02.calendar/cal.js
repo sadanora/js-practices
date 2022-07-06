@@ -1,11 +1,14 @@
-// dayjsモジュールのrequireとロケール設定
+// モジュール読み込み
+const minimist = require('minimist')
 const dayjs = require('dayjs')
 require('dayjs/locale/ja')
+
+// ロケール設定
 dayjs.locale('ja')
 
 // コマンドライン引数の取得
 const now = dayjs()
-const argv = require('minimist')(process.argv.slice(2), {
+const argv = minimist(process.argv.slice(2), {
   alias: {
     y: 'year',
     m: 'month'
