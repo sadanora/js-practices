@@ -41,7 +41,7 @@ console.log(('日 月 火 水 木 金 土'))
 const blankUnit = 3
 const wday = startDate.format('d')
 
-process.stdout.write(`${' '.repeat(wday * blankUnit)}`)
+process.stdout.write(' '.repeat(wday * blankUnit))
 
 // 日付の表示
 const saturday = 6
