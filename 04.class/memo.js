@@ -3,6 +3,20 @@ const enquirer = require('enquirer')
 const minimist = require('minimist')
 const readline = require('readline')
 
+// オプションの受け取り
+const argv = minimist(process.argv.slice(2), {
+  alias: {
+    l: 'list',
+    r: 'refer',
+    d: 'delete'
+  },
+  default: {
+    l: false,
+    r: false,
+    d: false
+  }
+})
+
 // ディレクトリが存在しなければ作成
 const directoryPath = './memos'
 if (!fs.existsSync(directoryPath)) {
@@ -54,4 +68,14 @@ const reference = async () => {
   })
 }
 
-reference()
+function main (argv) {
+  if (argv.r) {
+    reference()
+  } else if (argv.l) {
+    console.log(generateChoices().forEach(choice => {
+      console.log(choice)
+    }))
+  }
+};
+
+main(argv)
