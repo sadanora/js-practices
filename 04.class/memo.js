@@ -39,22 +39,23 @@ const createMemo = () => {
   })
 }
 
-// メモの一覧表示
-const generateChoices = () => {
+// メモの一覧取得
+const getMemoTitles = () => {
   const files = fs.readdirSync('./memos')
-  const choices = []
+  const memoTitles = []
   files.forEach(filename => {
-    choices.push(filename.split('.txt')[0])
+    memoTitles.push(filename.split('.txt')[0])
   })
-  return choices
+  return memoTitles
 }
 
+// -rオプションの処理
 const reference = async () => {
   const question = {
     type: 'select',
     name: 'chooseMemo',
     message: 'Choose a memo you want to see:',
-    choices: generateChoices()
+    choices: getMemoTitles()
   }
   const answer = await enquirer.prompt(question)
 
@@ -68,13 +69,16 @@ const reference = async () => {
   })
 }
 
+// メインロジック
 function main (argv) {
   if (argv.r) {
     reference()
   } else if (argv.l) {
-    console.log(generateChoices().forEach(choice => {
-      console.log(choice)
-    }))
+    getMemoTitles().forEach(memoTitle => {
+      console.log(memoTitle)
+    })
+  } else {
+    createMemo()
   }
 };
 
