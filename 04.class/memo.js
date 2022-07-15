@@ -38,13 +38,13 @@ const generateChoices = () => {
 const reference = (async ()=> {
   const question = {
     type: 'select',
-    name: 'chooseNote',
-    message: 'Choose a note you want to see:',
+    name: 'chooseMemo',
+    message: 'Choose a memo you want to see:',
     choices: generateChoices()
   };
   const answer = await enquirer.prompt(question);
 
-  const stream = fs.createReadStream(`./memos/${answer.chooseNote}.txt`, 'utf8')
+  const stream = fs.createReadStream(`./memos/${answer.chooseMemo}.txt`, 'utf8')
   const rl = readline.createInterface({
     input: stream,
   });
