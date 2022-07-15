@@ -1,6 +1,7 @@
 const fs = require('fs')
 const enquirer = require('enquirer');
 const minimist = require('minimist');
+const readline = require('readline');
 
 // ディレクトリが存在しなければ作成
 const directoryPath = './memos'
@@ -24,4 +25,33 @@ const createMemo = () => {
   });
 };
 
-createMemo()
+// メモの一覧表示
+const generateChoices = () => {
+  const files = fs.readdirSync('./memos')
+  const choices = []
+  files.forEach(filename => {
+    choices.push(filename.split('.txt')[0])
+  })
+  return choices
+}
+
+const reference = (async ()=> {
+  const question = {
+    type: 'select',
+    name: 'chooseNote',
+    message: 'Choose a note you want to see:',
+    choices: generateChoices()
+  };
+  const answer = await enquirer.prompt(question);
+
+  const stream = fs.createReadStream(`./memos/${answer.chooseNote}.txt`, 'utf8')
+  const rl = readline.createInterface({
+    input: stream,
+  });
+
+  rl.on('line', (lineString) => {
+    console.log(lineString)
+  });
+});
+
+reference()
