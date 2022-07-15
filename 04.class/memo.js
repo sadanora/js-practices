@@ -16,11 +16,12 @@ const parseStdin = async () => {
   return text;
 };
 
+// メモの追加
 const createMemo = () => {
   parseStdin().then(text => {
     const fileName = dayjs().toISOString()
-    fs.writeFileSync(`./memos/${fileName}`, text);
+    fs.writeFileSync(`./memos/${fileName}.txt`, text);
   });
 };
 
-createMemo()
+createMemo();
