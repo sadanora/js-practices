@@ -7,7 +7,6 @@
     "eslint-plugin-promise": "^6.0.0"
   },
   "dependencies": {
-    "dayjs": "^1.11.3",
     "enquirer": "^2.3.6",
     "minimist": "^1.2.6"
   }
