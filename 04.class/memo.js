@@ -48,7 +48,7 @@ const getMemoTitles = () => {
 }
 
 // -rオプションの処理
-const reference = async () => {
+const referenceMemo = async () => {
   const question = {
     type: 'select',
     name: 'chooseMemo',
@@ -83,7 +83,7 @@ const deleteMemo = async () => {
 // メインロジック
 function main (argv) {
   if (argv.r) {
-    reference()
+    referenceMemo()
   } else if (argv.l) {
     getMemoTitles().forEach(memoTitle => {
       console.log(memoTitle)
