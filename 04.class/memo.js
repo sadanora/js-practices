@@ -77,7 +77,7 @@ const deleteMemo = async () => {
   const answer = await enquirer.prompt(question)
 
   fs.unlinkSync(`./memos/${answer.chooseMemo}.txt`);
-  console.log('削除しました。');
+  console.log('It has been deleted');
 }
 
 // メインロジック
