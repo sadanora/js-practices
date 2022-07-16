@@ -23,18 +23,16 @@ if (!fs.existsSync(directoryPath)) {
   fs.mkdirSync(directoryPath)
 }
 
-// 標準入力の受け取り
-const parseStdin = async () => {
-  const buffers = []
-  for await (const chunk of process.stdin) buffers.push(chunk)
-  const text = String.prototype.concat(buffers)
-  return text
-}
-
 // メモの追加
 const createMemo = () => {
-  parseStdin().then(text => {
-    const fileName = text.split('\n')[0]
+  const lines = []
+  const reader = readline.createInterface(process.stdin)
+  reader.on('line', (line) => {
+    lines.push(line)
+  })
+  reader.on('close', () => {
+    const fileName = String(lines[0])
+    const text = lines.join('\n')
     fs.writeFileSync(`./memos/${fileName}.txt`, text)
   })
 }
@@ -69,6 +67,19 @@ const reference = async () => {
   })
 }
 
+const deleteMemo = async () => {
+  const question = {
+    type: 'select',
+    name: 'chooseMemo',
+    message: 'Choose a memo you want to delete:',
+    choices: getMemoTitles()
+  }
+  const answer = await enquirer.prompt(question)
+
+  fs.unlinkSync(`./memos/${answer.chooseMemo}.txt`);
+  console.log('削除しました。');
+}
+
 // メインロジック
 function main (argv) {
   if (argv.r) {
@@ -77,6 +88,8 @@ function main (argv) {
     getMemoTitles().forEach(memoTitle => {
       console.log(memoTitle)
     })
+  } else if (argv.d) {
+    deleteMemo()
   } else {
     createMemo()
   }
