@@ -3,6 +3,13 @@ const enquirer = require('enquirer')
 const minimist = require('minimist')
 const readline = require('readline')
 
+const DIRECTORY_PATH = './memos'
+
+// ディレクトリが存在しなければ作成
+if (!fs.existsSync(DIRECTORY_PATH)) {
+  fs.mkdirSync(DIRECTORY_PATH)
+}
+
 // オプションの受け取り
 const argv = minimist(process.argv.slice(2), {
   alias: {
@@ -17,81 +24,79 @@ const argv = minimist(process.argv.slice(2), {
   }
 })
 
-// ディレクトリが存在しなければ作成
-const directoryPath = './memos'
-if (!fs.existsSync(directoryPath)) {
-  fs.mkdirSync(directoryPath)
-}
-
-// メモの追加
-const createMemo = () => {
-  const lines = []
-  const reader = readline.createInterface(process.stdin)
-  reader.on('line', (line) => {
-    lines.push(line)
-  })
-  reader.on('close', () => {
-    const fileName = String(lines[0])
-    const text = lines.join('\n')
-    fs.writeFileSync(`./memos/${fileName}.txt`, text)
-  })
-}
-
-// メモの一覧取得
-const getMemoTitles = () => {
-  const files = fs.readdirSync('./memos')
-  const memoTitles = []
-  files.forEach(filename => {
-    memoTitles.push(filename.split('.txt')[0])
-  })
-  return memoTitles
-}
-
-// -rオプションの処理
-const referenceMemo = async () => {
-  const question = {
-    type: 'select',
-    name: 'chooseMemo',
-    message: 'Choose a memo you want to see:',
-    choices: getMemoTitles()
+class Memo {
+  // constructor() {
+  // }
+  create () {
+    const lines = []
+    const reader = readline.createInterface(process.stdin)
+    reader.on('line', (line) => {
+      lines.push(line)
+    })
+    reader.on('close', () => {
+      const fileName = String(lines[0])
+      const text = lines.join('\n')
+      fs.writeFileSync(`${DIRECTORY_PATH}/${fileName}.txt`, text)
+    })
   }
-  const answer = await enquirer.prompt(question)
 
-  const stream = fs.createReadStream(`./memos/${answer.chooseMemo}.txt`, 'utf8')
-  const rl = readline.createInterface({
-    input: stream
-  })
+  async refer () {
+    const question = {
+      type: 'select',
+      name: 'chooseMemo',
+      message: 'Choose a memo you want to see:',
+      choices: this.list()
+    }
+    const answer = await enquirer.prompt(question)
 
-  rl.on('line', (lineString) => {
-    console.log(lineString)
-  })
-}
+    const stream = fs.createReadStream(`${DIRECTORY_PATH}/${answer.chooseMemo}.txt`, 'utf8')
+    const rl = readline.createInterface({
+      input: stream
+    })
 
-const deleteMemo = async () => {
-  const question = {
-    type: 'select',
-    name: 'chooseMemo',
-    message: 'Choose a memo you want to delete:',
-    choices: getMemoTitles()
+    rl.on('line', (lineString) => {
+      console.log(lineString)
+    })
   }
-  const answer = await enquirer.prompt(question)
 
-  fs.unlinkSync(`./memos/${answer.chooseMemo}.txt`);
-  console.log('It has been deleted');
+  list () {
+    const files = fs.readdirSync(`${DIRECTORY_PATH}`)
+    const list = []
+    files.forEach(filename => {
+      list.push(filename.split('.txt')[0])
+    })
+    return list
+  }
+
+  async delete () {
+    const question = {
+      type: 'select',
+      name: 'chooseMemo',
+      message: 'Choose a memo you want to delete:',
+      choices: this.list()
+    }
+
+    const answer = await enquirer.prompt(question)
+
+    fs.unlinkSync(`${DIRECTORY_PATH}/${answer.chooseMemo}.txt`)
+    console.log('It has been deleted')
+  }
 }
 
 // メインロジック
+const memo = new Memo()
+
 function main (argv) {
   if (argv.r) {
-    referenceMemo()
+    memo.refer()
   } else if (argv.l) {
-    getMemoTitles().forEach(memoTitle => {
+    memo.list().forEach(memoTitle => {
       console.log(memoTitle)
     })
   } else if (argv.d) {
-    deleteMemo()
+    memo.delete()
   } else {
-    createMemo()
+    memo.create()
   }
 };
 
