@@ -7,13 +7,14 @@ const readline = require('readline')
 // メモの保存先ディレクトリを宣言
 const DIRECTORY_PATH = './memos'
 
+// クラスを定義
 class Memo {
   constructor (title, body) {
     this.title = title
     this.body = body
   }
 
-  create () {
+  save () {
     fs.writeFileSync(`${DIRECTORY_PATH}/${this.title}.txt`, this.body)
   }
 }
@@ -29,7 +30,7 @@ class Command {
       const title = String(lines[0])
       const body = lines.join('\n')
       const memo = new Memo(title, body)
-      memo.create()
+      memo.save()
     })
   }
 
@@ -78,7 +79,6 @@ class Command {
   }
 }
 
-
 // オプションの受け取り
 const argv = minimist(process.argv.slice(2), {
   alias: {
@@ -103,14 +103,14 @@ const main = (argv) => {
   if (argv.r) {
     command.refer()
   } else if (argv.l) {
-    command.list().forEach(memoTitle => {
-      console.log(memoTitle)
+    command.list().forEach(title => {
+      console.log(title)
     })
   } else if (argv.d) {
     command.delete()
   } else {
     command.create()
   }
-};
+}
 
 main(argv)
