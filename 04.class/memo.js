@@ -8,8 +8,17 @@ const readline = require('readline')
 const DIRECTORY_PATH = './memos'
 
 class Memo {
-  // constructor() {
-  // }
+  constructor (title, body) {
+    this.title = title
+    this.body = body
+  }
+
+  create () {
+    fs.writeFileSync(`${DIRECTORY_PATH}/${this.title}.txt`, this.body)
+  }
+}
+
+class Command {
   create () {
     const lines = []
     const reader = readline.createInterface(process.stdin)
@@ -17,9 +26,10 @@ class Memo {
       lines.push(line)
     })
     reader.on('close', () => {
-      const fileName = String(lines[0])
-      const text = lines.join('\n')
-      fs.writeFileSync(`${DIRECTORY_PATH}/${fileName}.txt`, text)
+      const title = String(lines[0])
+      const body = lines.join('\n')
+      const memo = new Memo(title, body)
+      memo.create()
     })
   }
 
@@ -41,8 +51,8 @@ class Memo {
   list () {
     const files = fs.readdirSync(`${DIRECTORY_PATH}`)
     const list = []
-    files.forEach(filename => {
-      list.push(filename.split('.txt')[0])
+    files.forEach(title => {
+      list.push(title.split('.txt')[0])
     })
     return list
   }
@@ -68,6 +78,7 @@ class Memo {
   }
 }
 
+
 // オプションの受け取り
 const argv = minimist(process.argv.slice(2), {
   alias: {
@@ -83,22 +94,22 @@ const argv = minimist(process.argv.slice(2), {
 })
 
 // メインロジック
-const memo = new Memo()
+const command = new Command()
 const main = (argv) => {
   // ディレクトリが存在しなければ作成
   if (!fs.existsSync(DIRECTORY_PATH)) {
     fs.mkdirSync(DIRECTORY_PATH)
   }
   if (argv.r) {
-    memo.refer()
+    command.refer()
   } else if (argv.l) {
-    memo.list().forEach(memoTitle => {
+    command.list().forEach(memoTitle => {
       console.log(memoTitle)
     })
   } else if (argv.d) {
-    memo.delete()
+    command.delete()
   } else {
-    memo.create()
+    command.create()
   }
 };
 
