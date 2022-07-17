@@ -1,8 +1,10 @@
+// モジュール読み込み
 const fs = require('fs')
 const enquirer = require('enquirer')
 const minimist = require('minimist')
 const readline = require('readline')
 
+// メモの保存先ディレクトリを宣言
 const DIRECTORY_PATH = './memos'
 
 // ディレクトリが存在しなければ作成
@@ -41,19 +43,15 @@ class Memo {
   }
 
   async refer () {
-    const question = {
-      type: 'select',
-      name: 'chooseMemo',
-      message: 'Choose a memo you want to see:',
-      choices: this.list()
-    }
+    const message = 'Choose a memo you want to see:'
+    const choices = this.list()
+    const question = this.#question(message, choices)
     const answer = await enquirer.prompt(question)
 
     const stream = fs.createReadStream(`${DIRECTORY_PATH}/${answer.chooseMemo}.txt`, 'utf8')
     const rl = readline.createInterface({
       input: stream
     })
-
     rl.on('line', (lineString) => {
       console.log(lineString)
     })
@@ -69,17 +67,23 @@ class Memo {
   }
 
   async delete () {
-    const question = {
-      type: 'select',
-      name: 'chooseMemo',
-      message: 'Choose a memo you want to delete:',
-      choices: this.list()
-    }
-
+    const message = 'Choose a memo you want to delete:'
+    const choices = this.list()
+    const question = this.#question(message, choices)
     const answer = await enquirer.prompt(question)
 
     fs.unlinkSync(`${DIRECTORY_PATH}/${answer.chooseMemo}.txt`)
-    console.log('It has been deleted')
+    console.log(`${answer.chooseMemo} has been deleted`)
+  }
+
+  #question (message, choices) {
+    const question = {
+      type: 'select',
+      name: 'chooseMemo',
+      message,
+      choices
+    }
+    return question
   }
 }
 
