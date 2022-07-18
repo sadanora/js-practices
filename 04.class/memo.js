@@ -94,12 +94,12 @@ const argv = minimist(process.argv.slice(2), {
 })
 
 // メインロジック
-const command = new Command()
 const main = (argv) => {
   // ディレクトリが存在しなければ作成
   if (!fs.existsSync(DIRECTORY_PATH)) {
     fs.mkdirSync(DIRECTORY_PATH)
   }
+  const command = new Command()
   if (argv.r) {
     command.refer()
   } else if (argv.l) {
