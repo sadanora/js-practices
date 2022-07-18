@@ -34,9 +34,16 @@ class Command {
     })
   }
 
+  list () {
+    const titles = this.#getTitles()
+    titles.forEach(title => {
+      console.log(title)
+    })
+  }
+
   async refer () {
     const message = 'Choose a memo you want to see:'
-    const choices = this.list()
+    const choices = this.#getTitles()
     const question = this.#question(message, choices)
     const answer = await enquirer.prompt(question)
 
@@ -49,23 +56,23 @@ class Command {
     })
   }
 
-  list () {
-    const files = fs.readdirSync(`${DIRECTORY_PATH}`)
-    const list = []
-    files.forEach(title => {
-      list.push(title.split('.txt')[0])
-    })
-    return list
-  }
-
   async delete () {
     const message = 'Choose a memo you want to delete:'
-    const choices = this.list()
+    const choices = this.#getTitles()
     const question = this.#question(message, choices)
     const answer = await enquirer.prompt(question)
 
     fs.unlinkSync(`${DIRECTORY_PATH}/${answer.chooseMemo}.txt`)
     console.log(`${answer.chooseMemo} has been deleted`)
+  }
+
+  #getTitles () {
+    const files = fs.readdirSync(`${DIRECTORY_PATH}`)
+    const titles = []
+    files.forEach(title => {
+      titles.push(title.split('.txt')[0])
+    })
+    return titles
   }
 
   #question (message, choices) {
@@ -103,9 +110,7 @@ const main = (argv) => {
   if (argv.r) {
     command.refer()
   } else if (argv.l) {
-    command.list().forEach(title => {
-      console.log(title)
-    })
+    command.list()
   } else if (argv.d) {
     command.delete()
   } else {
