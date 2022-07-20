@@ -48,10 +48,10 @@ class Command {
     const answer = await enquirer.prompt(question)
 
     const stream = fs.createReadStream(`${DIRECTORY_PATH}/${answer.chooseMemo}.txt`, 'utf8')
-    const rl = readline.createInterface({
+    const reader = readline.createInterface({
       input: stream
     })
-    rl.on('line', (lineString) => {
+    reader.on('line', (lineString) => {
       console.log(lineString)
     })
   }
