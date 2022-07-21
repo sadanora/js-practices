@@ -43,7 +43,6 @@ class Command {
   }
 
   async refer () {
-    const message = 'Choose a memo you want to see:'
     const choices = this.#getTitles()
     const lines = []
 
@@ -51,7 +50,8 @@ class Command {
       lines.push('memo was not found')
       return lines
     } else {
-      const question = this.#question(message, choices)
+      const message = 'Choose a memo you want to see:'
+      const question = this.#generateQuestion(message, choices)
       const answer = await enquirer.prompt(question)
 
       const stream = fs.createReadStream(`${DIRECTORY_PATH}/${answer.chooseMemo}.txt`, 'utf8')
@@ -70,14 +70,14 @@ class Command {
   }
 
   async delete () {
-    const message = 'Choose a memo you want to delete:'
     const choices = this.#getTitles()
 
     if (this.#isBlankArray(choices)) {
-      const text = 'memo was not found'
-      return text
+      const result = 'memo was not found'
+      return result
     } else {
-      const question = this.#question(message, choices)
+      const message = 'Choose a memo you want to delete:'
+      const question = this.#generateQuestion(message, choices)
       const answer = await enquirer.prompt(question)
 
       return new Promise((resolve) => {
@@ -96,7 +96,7 @@ class Command {
     return titles
   }
 
-  #question (message, choices) {
+  #generateQuestion (message, choices) {
     const question = {
       type: 'select',
       name: 'chooseMemo',
@@ -152,8 +152,3 @@ const main = (argv) => {
 }
 
 main(argv)
-
-// const command = new Command
-// const array = []
-// const result = command.isBlankArray(array)
-// console.log(result)
