@@ -36,9 +36,10 @@ class Command {
 
   list () {
     const titles = this.#getTitles()
-    titles.forEach(title => {
-      console.log(title)
-    })
+    if (titles.length === 0) {
+      titles.push('memo was not found')
+    }
+    return titles
   }
 
   async refer () {
@@ -128,7 +129,9 @@ const main = (argv) => {
   }
   const command = new Command()
   if (argv.l) {
-    command.list()
+    command.list().forEach(titles => {
+      console.log(titles)
+    })
   } else if (argv.r) {
     command.refer().then(lines => {
       lines.forEach(line => {
