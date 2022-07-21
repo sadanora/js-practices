@@ -36,7 +36,7 @@ class Command {
 
   list () {
     const titles = this.#getTitles()
-    if (titles.length === 0) {
+    if (this.#isBlankArray(titles)) {
       titles.push('memo was not found')
     }
     return titles
@@ -47,7 +47,7 @@ class Command {
     const choices = this.#getTitles()
     const lines = []
 
-    if (choices.length === 0) {
+    if (this.#isBlankArray(choices)) {
       lines.push('memo was not found')
       return lines
     } else {
@@ -73,7 +73,7 @@ class Command {
     const message = 'Choose a memo you want to delete:'
     const choices = this.#getTitles()
 
-    if (choices.length === 0) {
+    if (this.#isBlankArray(choices)) {
       const text = 'memo was not found'
       return text
     } else {
@@ -104,6 +104,10 @@ class Command {
       choices
     }
     return question
+  }
+
+  #isBlankArray (array) {
+    return array.length === 0
   }
 }
 
@@ -148,3 +152,8 @@ const main = (argv) => {
 }
 
 main(argv)
+
+// const command = new Command
+// const array = []
+// const result = command.isBlankArray(array)
+// console.log(result)
