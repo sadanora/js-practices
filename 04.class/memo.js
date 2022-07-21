@@ -44,26 +44,46 @@ class Command {
   async refer () {
     const message = 'Choose a memo you want to see:'
     const choices = this.#getTitles()
-    const question = this.#question(message, choices)
-    const answer = await enquirer.prompt(question)
+    const lines = []
 
-    const stream = fs.createReadStream(`${DIRECTORY_PATH}/${answer.chooseMemo}.txt`, 'utf8')
-    const reader = readline.createInterface({
-      input: stream
-    })
-    reader.on('line', (lineString) => {
-      console.log(lineString)
-    })
+    if (choices.length === 0) {
+      lines.push('memo was not found')
+      return lines
+    } else {
+      const question = this.#question(message, choices)
+      const answer = await enquirer.prompt(question)
+
+      const stream = fs.createReadStream(`${DIRECTORY_PATH}/${answer.chooseMemo}.txt`, 'utf8')
+      const reader = readline.createInterface({
+        input: stream
+      })
+      return new Promise((resolve) => {
+        reader.on('line', (line) => {
+          lines.push(line)
+        })
+        reader.on('close', () => {
+          resolve(lines)
+        })
+      })
+    }
   }
 
   async delete () {
     const message = 'Choose a memo you want to delete:'
     const choices = this.#getTitles()
-    const question = this.#question(message, choices)
-    const answer = await enquirer.prompt(question)
 
-    fs.unlinkSync(`${DIRECTORY_PATH}/${answer.chooseMemo}.txt`)
-    console.log(`${answer.chooseMemo} has been deleted`)
+    if (choices.length === 0) {
+      const text = 'memo was not found'
+      return text
+    } else {
+      const question = this.#question(message, choices)
+      const answer = await enquirer.prompt(question)
+
+      return new Promise((resolve) => {
+        fs.unlinkSync(`${DIRECTORY_PATH}/${answer.chooseMemo}.txt`)
+        resolve(`${answer.chooseMemo} has been deleted`)
+      })
+    }
   }
 
   #getTitles () {
@@ -107,12 +127,18 @@ const main = (argv) => {
     fs.mkdirSync(DIRECTORY_PATH)
   }
   const command = new Command()
-  if (argv.r) {
-    command.refer()
-  } else if (argv.l) {
+  if (argv.l) {
     command.list()
+  } else if (argv.r) {
+    command.refer().then(lines => {
+      lines.forEach(line => {
+        console.log(line)
+      })
+    })
   } else if (argv.d) {
-    command.delete()
+    command.delete().then(result => {
+      console.log(result)
+    })
   } else {
     command.create()
   }
