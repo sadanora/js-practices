@@ -4,8 +4,12 @@ const enquirer = require('enquirer')
 const minimist = require('minimist')
 const readline = require('readline')
 
-// メモの保存先ディレクトリを宣言
+// 定数を宣言
 const DIRECTORY_PATH = './memos'
+const ERR_MESSAGE = {
+  withoutMemo: 'Memo was not found'
+}
+Object.freeze(ERR_MESSAGE)
 
 // クラスを定義
 class Memo {
@@ -38,7 +42,7 @@ class Command {
   list () {
     const titles = this.#getTitles()
     if (this.#isBlankArray(titles)) {
-      titles.push('Memo was not found')
+      titles.push(ERR_MESSAGE.withoutMemo)
     }
     return titles
   }
@@ -48,7 +52,7 @@ class Command {
     const lines = []
 
     if (this.#isBlankArray(choices)) {
-      lines.push('Memo was not found')
+      lines.push(ERR_MESSAGE.withoutMemo)
       return lines
     } else {
       const message = 'Choose a memo you want to see:'
@@ -75,8 +79,7 @@ class Command {
     const choices = this.#getTitles()
 
     if (this.#isBlankArray(choices)) {
-      const result = 'Memo was not found'
-      return result
+      return ERR_MESSAGE.withoutMemo
     } else {
       const message = 'Choose a memo you want to delete:'
       const question = this.#generateQuestion(message, choices)
