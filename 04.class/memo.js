@@ -37,7 +37,7 @@ class Command {
   list () {
     const titles = this.#getTitles()
     if (this.#isBlankArray(titles)) {
-      titles.push('memo was not found')
+      titles.push('Memo was not found')
     }
     return titles
   }
@@ -47,7 +47,7 @@ class Command {
     const lines = []
 
     if (this.#isBlankArray(choices)) {
-      lines.push('memo was not found')
+      lines.push('Memo was not found')
       return lines
     } else {
       const message = 'Choose a memo you want to see:'
@@ -73,7 +73,7 @@ class Command {
     const choices = this.#getTitles()
 
     if (this.#isBlankArray(choices)) {
-      const result = 'memo was not found'
+      const result = 'Memo was not found'
       return result
     } else {
       const message = 'Choose a memo you want to delete:'
