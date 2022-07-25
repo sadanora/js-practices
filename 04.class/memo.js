@@ -89,10 +89,7 @@ class Command {
 
   #getTitles () {
     const files = fs.readdirSync(`${DIRECTORY_PATH}`)
-    const titles = []
-    files.forEach(title => {
-      titles.push(title.split('.txt')[0])
-    })
+    const titles = files.map(file => file.replace(/\.txt$/, ''))
     return titles
   }
 
