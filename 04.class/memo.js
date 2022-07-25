@@ -14,8 +14,8 @@ class Memo {
     this.body = body
   }
 
-  save () {
-    fs.writeFileSync(`${DIRECTORY_PATH}/${this.title}.txt`, this.body)
+  save (filePath) {
+    fs.writeFileSync(filePath, this.body)
   }
 }
 
@@ -29,8 +29,9 @@ class Command {
     reader.on('close', () => {
       const title = String(lines[0])
       const body = lines.join('\n')
+      const filePath = this.#generateFilePath(title)
       const memo = new Memo(title, body)
-      memo.save()
+      memo.save(filePath)
     })
   }
 
@@ -54,7 +55,8 @@ class Command {
       const question = this.#generateQuestion(message, choices)
       const answer = await enquirer.prompt(question)
 
-      const stream = fs.createReadStream(`${DIRECTORY_PATH}/${answer.chooseMemo}.txt`, 'utf8')
+      const filePath = this.#generateFilePath(answer.chooseMemo)
+      const stream = fs.createReadStream(filePath, 'utf8')
       const reader = readline.createInterface({
         input: stream
       })
@@ -79,9 +81,10 @@ class Command {
       const message = 'Choose a memo you want to delete:'
       const question = this.#generateQuestion(message, choices)
       const answer = await enquirer.prompt(question)
+      const filePath = this.#generateFilePath(answer.chooseMemo)
 
       return new Promise((resolve) => {
-        fs.unlinkSync(`${DIRECTORY_PATH}/${answer.chooseMemo}.txt`)
+        fs.unlinkSync(filePath)
         resolve(`${answer.chooseMemo} has been deleted`)
       })
     }
@@ -101,6 +104,11 @@ class Command {
       choices
     }
     return question
+  }
+
+  #generateFilePath (fileName) {
+    const filePath = `${DIRECTORY_PATH}/${fileName}.txt`
+    return filePath
   }
 
   #isBlankArray (array) {
